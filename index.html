@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700;800;900&display=swap");
+
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      ul,
+      li,
+      ol {
+        list-style: none;
+      }
+
+      html,
+      body {
+        font-family: "Poppins", sans-serif;
+        width: 100%;
+        height: 100%;
+        background-color: #f5efee;
+      }
+
+      /* IE */
+      .select::-ms-expand,
+      input::-ms-expand {
+        display: none;
+      }
+      .select {
+        font-family: "Poppins", sans-serif;
+        -o-appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding: 10px;
+        border: 2px solid #000;
+        width: 100%;
+        outline: none;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 600;
+        background-color: #f5865e;
+        cursor: pointer;
+      }
+
+      input {
+        font-family: "Poppins", sans-serif;
+        -o-appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding: 10px;
+        outline: none;
+        width: 100%;
+        border: 2px solid #000;
+        box-sizing: border-box;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      input:disabled {
+        background-color: #000;
+        color: #fff;
+      }
+      input::placeholder {
+        color: #eee;
+      }
+
+      .list {
+        height: 0;
+        margin-top: -2px;
+        overflow: hidden;
+        transition: height 0.2s;
+        border: 2px solid #000;
+        border-top: none;
+      }
+      .list.toggle {
+        height: 135px;
+      }
+      .list li {
+        background-color: #fff;
+        padding: 10px;
+        border-bottom: 2px solid #000;
+        cursor: pointer;
+      }
+      .list li:hover,
+      .list li.active {
+        background-color: #000;
+        color: #fff;
+      }
+      .list li:last-child {
+        border-bottom: none;
+      }
+
+      .bigTitle {
+        background-color: #ffe88e;
+        padding: 16px 20px;
+        border-bottom: 2px solid #000;
+      }
+      .bigTitle .wrap {
+        max-width: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 auto;
+      }
+      .bigTitle h1 {
+        font-size: 2rem;
+        font-weight: 600;
+      }
+
+      .container {
+        padding: 45px 20px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .resetIcon {
+        outline: none;
+        border: 2px solid #000;
+        width: 36px;
+        height: 36px;
+        padding: 4px;
+        cursor: pointer;
+        border-radius: 100px;
+        background-color: #f5875e;
+        transition: all 0.2s;
+      }
+      .resetIcon:hover {
+        transform: rotateZ(360deg) scale(1.1);
+      }
+      .resetIcon.yellow {
+        background-color: #ffe88e;
+      }
+
+      .mainImg {
+        width: 50%;
+        margin: 20px auto 0;
+        display: block;
+      }
+
+      .switch {
+        cursor: pointer;
+        width: 72px;
+        height: 36px;
+        -o-appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border: 2px solid #000;
+        background: #c389ce;
+        border-radius: 100px;
+        position: relative;
+        outline: none;
+        font-size: 16px;
+      }
+      .switch::after {
+        content: "";
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        left: 3px;
+        top: 2px;
+        border-radius: 100px;
+        border: 2px solid #000;
+        transition: all 0.2s;
+      }
+      .switch.toggle::after {
+        left: 37px;
+      }
+
+      .btnGroup {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
+      .btnGroup > div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .arrow-right {
+        margin-top: 20px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 5px 0 5px 5px;
+        border-color: transparent transparent transparent #000000;
+      }
+      .arrow-left {
+        margin-top: 20px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 5px 5px 5px 0;
+        border-color: transparent #000000 transparent transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script
+    crossorigin
+    src="https://unpkg.com/react@18/umd/react.production.min.js"
+  ></script>
+  <script
+    crossorigin
+    src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+  ></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const root = document.getElementById("root");
+    // MinutesToHours
+    function MinutesToHours() {
+      const labelStyle = {
+        display: "block",
+        fontWeight: 600,
+        fontSize: 20,
+      };
+      const divStyle = {
+        marginBottom: "10px",
+        flex: 1,
+      };
+      const [num1, setNum1] = React.useState(0);
+      const [num2, setNum2] = React.useState(0);
+      const [switched, setSwitched] = React.useState(false);
+      const onReset = () => {
+        setNum1(0);
+        setNum2(0);
+      };
+      const onSwitch = () => {
+        const switchToggle = document.querySelector(".switch");
+        switchToggle.classList.toggle("toggle");
+        setSwitched((current) => !current);
+      };
+      const onChange1 = (e) => {
+        const num = e.target.value / 60;
+        setNum1(e.target.value);
+        setNum2(Math.round(num * 100) / 100);
+      };
+      const onChange2 = (e) => {
+        const num = e.target.value * 60;
+        setNum1(num);
+        setNum2(e.target.value);
+      };
+      return (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 20,
+            }}
+          >
+            <div style={divStyle}>
+              <label htmlFor="num1" style={labelStyle}>
+                Minutes
+              </label>
+              <input
+                value={num1}
+                id="num1"
+                type="number"
+                placeholder="Minutes"
+                onChange={onChange1}
+                disabled={switched}
+                min="0"
+              />
+            </div>
+            <div className={switched ? "arrow-left" : "arrow-right"}></div>
+            <div style={divStyle}>
+              <label htmlFor="num2" style={labelStyle}>
+                Hours
+              </label>
+              <input
+                value={num2}
+                id="num2"
+                type="number"
+                placeholder="Hours"
+                onChange={onChange2}
+                disabled={!switched}
+                min="0"
+              />
+            </div>
+          </div>
+          <div className="btnGroup">
+            <div>
+              <button onClick={onReset} className="resetIcon yellow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M 2 2 L 4.9394531 4.9394531 C 3.1262684 6.7482143 2 9.2427079 2 12 C 2 17.514 6.486 22 12 22 C 17.514 22 22 17.514 22 12 C 22 6.486 17.514 2 12 2 L 12 4 C 16.411 4 20 7.589 20 12 C 20 16.411 16.411 20 12 20 C 7.589 20 4 16.411 4 12 C 4 9.7940092 4.9004767 7.7972757 6.3496094 6.3496094 L 9 9 L 9 2 L 2 2 z"></path>
+                </svg>
+              </button>
+              <span>Reset</span>
+            </div>
+            <div>
+              {switched ? <span>Hours</span> : <span>Minutes</span>}
+              <button className="switch" onClick={onSwitch}></button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // InchesToCentimeters
+    function InchesToCentimeters() {
+      const labelStyle = {
+        display: "block",
+        fontWeight: 600,
+        fontSize: 20,
+      };
+      const divStyle = {
+        marginBottom: "10px",
+        flex: 1,
+      };
+      const [num1, setNum1] = React.useState(0);
+      const [num2, setNum2] = React.useState(0);
+      const [switched, setSwitched] = React.useState(false);
+      const onReset = () => {
+        setNum1(0);
+        setNum2(0);
+      };
+      const onSwitch = () => {
+        const switchToggle = document.querySelector(".switch");
+        switchToggle.classList.toggle("toggle");
+        setSwitched((current) => !current);
+      };
+      const onChange1 = (e) => {
+        const num = e.target.value * 2.54;
+        setNum1(e.target.value);
+        setNum2(num);
+      };
+      const onChange2 = (e) => {
+        const num = e.target.value / 2.54;
+        setNum1(num.toFixed(2));
+        setNum2(e.target.value);
+      };
+      return (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 20,
+            }}
+          >
+            <div style={divStyle}>
+              <label htmlFor="num1" style={labelStyle}>
+                Inches
+              </label>
+              <input
+                value={num1}
+                id="num1"
+                type="number"
+                placeholder="Inches"
+                onChange={onChange1}
+                disabled={switched}
+                min="0"
+              />
+            </div>
+            <div className={switched ? "arrow-left" : "arrow-right"}></div>
+            <div style={divStyle}>
+              <label htmlFor="num2" style={labelStyle}>
+                Centimeters
+              </label>
+              <input
+                value={num2}
+                id="num2"
+                type="number"
+                placeholder="Centimeters"
+                onChange={onChange2}
+                disabled={!switched}
+                min="0"
+              />
+            </div>
+          </div>
+          <div className="btnGroup">
+            <div>
+              <button onClick={onReset} className="resetIcon yellow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M 2 2 L 4.9394531 4.9394531 C 3.1262684 6.7482143 2 9.2427079 2 12 C 2 17.514 6.486 22 12 22 C 17.514 22 22 17.514 22 12 C 22 6.486 17.514 2 12 2 L 12 4 C 16.411 4 20 7.589 20 12 C 20 16.411 16.411 20 12 20 C 7.589 20 4 16.411 4 12 C 4 9.7940092 4.9004767 7.7972757 6.3496094 6.3496094 L 9 9 L 9 2 L 2 2 z"></path>
+                </svg>
+              </button>
+              <span>Reset</span>
+            </div>
+            <div>
+              {switched ? <span>Centimeters</span> : <span>Inches</span>}
+              <button className="switch" onClick={onSwitch}></button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // SquareMeterToPyeong
+    function SquareMeterToPyeong() {
+      const labelStyle = {
+        display: "block",
+        fontWeight: 600,
+        fontSize: 20,
+      };
+      const divStyle = {
+        marginBottom: "10px",
+        flex: 1,
+      };
+      const [num1, setNum1] = React.useState(0);
+      const [num2, setNum2] = React.useState(0);
+      const [switched, setSwitched] = React.useState(false);
+      const onReset = () => {
+        setNum1(0);
+        setNum2(0);
+      };
+      const onSwitch = () => {
+        const switchToggle = document.querySelector(".switch");
+        switchToggle.classList.toggle("toggle");
+        setSwitched((current) => !current);
+      };
+      const onChange1 = (e) => {
+        const num = e.target.value / 3.3058;
+        setNum1(e.target.value);
+        setNum2(num.toFixed(2));
+      };
+      const onChange2 = (e) => {
+        const num = e.target.value * 3.3058;
+        setNum1(num.toFixed(2));
+        setNum2(e.target.value);
+      };
+      return (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 20,
+            }}
+          >
+            <div style={divStyle}>
+              <label htmlFor="num1" style={labelStyle}>
+                Square meter(㎡)
+              </label>
+              <input
+                value={num1}
+                id="num1"
+                type="number"
+                placeholder="㎡"
+                onChange={onChange1}
+                disabled={switched}
+                min="0"
+              />
+            </div>
+            <div className={switched ? "arrow-left" : "arrow-right"}></div>
+            <div style={divStyle}>
+              <label htmlFor="num2" style={labelStyle}>
+                坪(평)
+              </label>
+              <input
+                value={num2}
+                id="num2"
+                type="number"
+                placeholder="평"
+                onChange={onChange2}
+                disabled={!switched}
+                min="0"
+              />
+            </div>
+          </div>
+          <div className="btnGroup">
+            <div>
+              <button onClick={onReset} className="resetIcon yellow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M 2 2 L 4.9394531 4.9394531 C 3.1262684 6.7482143 2 9.2427079 2 12 C 2 17.514 6.486 22 12 22 C 17.514 22 22 17.514 22 12 C 22 6.486 17.514 2 12 2 L 12 4 C 16.411 4 20 7.589 20 12 C 20 16.411 16.411 20 12 20 C 7.589 20 4 16.411 4 12 C 4 9.7940092 4.9004767 7.7972757 6.3496094 6.3496094 L 9 9 L 9 2 L 2 2 z"></path>
+                </svg>
+              </button>
+              <span>Reset</span>
+            </div>
+            <div>
+              {switched ? <span>坪</span> : <span>Square meter</span>}
+              <button className="switch" onClick={onSwitch}></button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // CountApp
+    function CountApp() {
+      const [counter, setCounter] = React.useState(0);
+      const countUp = () => {
+        setCounter((current) => current + 1);
+      };
+      return (
+        <div>
+          <h3>Total clicks: {counter}</h3>
+          <button onClick={countUp}>Click me</button>
+        </div>
+      );
+    }
+
+    function App() {
+      const [index, setIndex] = React.useState();
+
+      function onSelect(e) {
+        const list = document.querySelector(".list");
+        list.classList.toggle("toggle");
+      }
+      function onClickList(e) {
+        const list = document.querySelector(".list");
+        setIndex(e.target.value);
+        list.classList.remove("toggle");
+      }
+      return (
+        <div className="wrap">
+          <div className="bigTitle">
+            <div className="wrap">
+              <h1>Super Converter</h1>
+              <button
+                onClick={() => {
+                  setIndex();
+                  const list = document.querySelector(".list");
+                  list.classList.remove("toggle");
+                }}
+                className="resetIcon"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M 2 2 L 4.9394531 4.9394531 C 3.1262684 6.7482143 2 9.2427079 2 12 C 2 17.514 6.486 22 12 22 C 17.514 22 22 17.514 22 12 C 22 6.486 17.514 2 12 2 L 12 4 C 16.411 4 20 7.589 20 12 C 20 16.411 16.411 20 12 20 C 7.589 20 4 16.411 4 12 C 4 9.7940092 4.9004767 7.7972757 6.3496094 6.3496094 L 9 9 L 9 2 L 2 2 z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <article className="container" style={{ paddingBottom: 0 }}>
+            <button className="select" onClick={onSelect}>
+              {index === 0
+                ? "Minutes To Hours"
+                : index === 1
+                ? "Inches To Centimeters"
+                : index === 2
+                ? "Square meter To 坪"
+                : "Please select one!"}
+            </button>
+            <ul className="list">
+              <li
+                onClick={onClickList}
+                value="0"
+                className={index === 0 ? "active" : ""}
+              >
+                Minutes To Hours
+              </li>
+              <li
+                onClick={onClickList}
+                value="1"
+                className={index === 1 ? "active" : ""}
+              >
+                Inches To Centimeters
+              </li>
+              <li
+                onClick={onClickList}
+                value="2"
+                className={index === 2 ? "active" : ""}
+              >
+                Square meter To 坪
+              </li>
+            </ul>
+          </article>
+          <main className="container">
+            {index === 0 ? (
+              <MinutesToHours />
+            ) : index === 1 ? (
+              <InchesToCentimeters />
+            ) : index === 2 ? (
+              <SquareMeterToPyeong />
+            ) : (
+              <img
+                className="mainImg"
+                src="Calculator_Flatline.svg"
+                alt="Calculator Image"
+              />
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, root);
+  </script>
+</html>
